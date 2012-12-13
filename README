@@ -1,0 +1,8 @@
+bearlib
+=======
+
+A simple collection of helper routines that I use in a lot of projects.
+
+I used to just copy the directory into each project...
+
+yes, a build/release person was breaking *all* the rules - *sigh*
