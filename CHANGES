@@ -1,4 +1,7 @@
 2013-02-28  bear
+    * added a sanity check for the virtualenv to the init and
+      dev makefile targets
+    * added MANIFEST to .gitignore
     * added optional fileHandler param to bLogs()
     * another "but it feels better" reconfig
       what I need to do is stop reading other people's projects

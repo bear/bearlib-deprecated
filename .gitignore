@@ -1,5 +1,6 @@
 *.py[co]
 *.cfg
+MANIFEST
 
 # Packages
 *.egg
