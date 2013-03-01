@@ -8,7 +8,7 @@ bearlib
 
 """
 
-VERSION = (0, 5, 0, "alpha")
+VERSION = (0, 5, 1, "alpha")
 
 __author__    = 'bear (Mike Taylor)'
 __contact__   = 'bear@bear.im'
