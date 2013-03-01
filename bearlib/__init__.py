@@ -1,14 +1,21 @@
 #!/usr/bin/env python
 
-#
-# :copyright: (c) 2012 by Mike Taylor
-# :license: BSD 2-Clause
-#
+"""
+bearlib
 
-__version__   = u'0.5.0'
-__copyright__ = u'Copyright (c) 2012 Mike Taylor'
-__license__   = u'BSD 2-Clause'
-__author__    = u'bear (Mike Taylor) <bear@code-bear.com>'
+:copyright: (c) 2012 by Mike Taylor
+:license: BSD, see LICENSE for more details.
+
+"""
+
+VERSION = (0, 5, 0, "alpha")
+
+__author__    = 'bear (Mike Taylor)'
+__contact__   = 'bear@bear.im'
+__copyright__ = 'Copyright 2012, Mike Taylor'
+__license__   = 'BSD 2-Clause'
+__site__      = 'https://github.com/bear/bearlib'
+__version__   = u'.'.join(map(str, VERSION[0:3])) + u''.join(VERSION[3:])
 
 import os
 import os.path
@@ -23,7 +30,7 @@ _ourPath = os.getcwd()
 _ourName = os.path.splitext(os.path.basename(sys.argv[0]))[0]
 log      = logging.getLogger(_ourName)
 
-def initLogs(logger, echo=True, chatty=False, debug=False, loglevel=logging.INFO, logpath=None, logname=None):
+def bLogs(logger, echo=True, chatty=False, debug=False, loglevel=logging.INFO, logpath=None, logname=None):
     """ Initialize logging
     """
     if logpath is not None:
@@ -60,9 +67,9 @@ def initLogs(logger, echo=True, chatty=False, debug=False, loglevel=logging.INFO
 # that does the log init
 # I have not found a way to enable console echoing during the config item creation
 # in a way that doesn't completely stink up the room!
-initLogs(log, echo=True, debug=True)
+bLogs(log, echo=True, debug=True)
 
-class BearConfig(object):
+class bConfig(object):
     def __init__(self, configFilename=None):
         """ Parse command line parameters and populate the options object
         """
@@ -73,13 +80,13 @@ class BearConfig(object):
         self.config         = {}
 
         # these are my normal defaults
-        self.bears_config   = { 'configFile':  ('-c', '--config',  self.configFilename, 'Configuration Filename (optionally w/path'),
-                                'debug':       ('-d', '--debug',   False,               'Enable Debug'),
-                                'echo':        ('-e', '--echo',    False,               'Enable log echo to the console'),
-                                'logpath':     ('-l', '--logpath', '',                  'Path where log file is to be written'),
-                                'logfile':     ('',   '--logfile', '%s.log' % _ourName, 'log filename'),
-                                'verbose':     ('-v', '--verbose', False,               'show extra output from remote commands'),
-                              }
+        self._defaults = { 'configFile':  ('-c', '--config',  self.configFilename, 'Configuration Filename (optionally w/path'),
+                           'debug':       ('-d', '--debug',   False,               'Enable Debug'),
+                           'echo':        ('-e', '--echo',    False,               'Enable log echo to the console'),
+                           'logpath':     ('-l', '--logpath', '',                  'Path where log file is to be written'),
+                           'logfile':     ('',   '--logfile', '%s.log' % _ourName, 'log filename'),
+                           'verbose':     ('-v', '--verbose', False,               'show extra output from remote commands'),
+                         }
 
     def findConfigFile(self, paths=None, envVar=None):
         searchPaths = []
@@ -123,9 +130,9 @@ class BearConfig(object):
         # load my config items, but just in case the caller has other ideas
         # do not load them if the key is already present
         # TODO need to add some way to also cross check short/long command values
-        for key in self.bears_config:
+        for key in self._defaults:
             if key not in self.config:
-                self.config[key] = self.bears_config[key]
+                self.config[key] = self._defaults[key]
 
         for key in self.config:
             items = self.config[key]
@@ -143,13 +150,13 @@ class BearConfig(object):
             self.findConfigFile(configPaths, configEnvVar)
             self.options.config = self.loadJSON(self.options.configFile)
 
-        initLogs(self.log, echo=getattr(self.options, 'echo', False), 
-                           debug=getattr(self.options, 'debug', False), 
-                           logpath=getattr(self.options, 'logpath', None), 
-                           logname=getattr(self.options, 'logfile', None))
+        bLogs(self.log, echo=getattr(self.options, 'echo', False), 
+                        debug=getattr(self.options, 'debug', False), 
+                        logpath=getattr(self.options, 'logpath', None), 
+                        logname=getattr(self.options, 'logfile', None))
 
-    def loadJSON(self, filename):
-        """ Read, parse and return given config file
+    def loadJson(self, filename):
+        """ Read, parse and return given Json config file
         """
         jsonConfig = {}
 

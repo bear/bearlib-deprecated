@@ -3,7 +3,11 @@ init:
 	pip install nose
 	pip install docutils
 	pip install -r requirements.txt
-    
+	pip install -e .
+
+refresh:
+	pip install --upgrade -e .
+
 test:
 	nosetests tests
 

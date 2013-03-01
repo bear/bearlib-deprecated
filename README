@@ -6,3 +6,16 @@ A simple collection of helper routines that I use in a lot of projects.
 I used to just copy the directory into each project...
 
 yes, a build/release person was breaking *all* the rules - *sigh*
+
+to install from git:
+
+  cd /base/of/your/virtualenv
+  
+  using pip: pip install -e git+https://github.com/bear/bearlib.git#egg=bearlib
+
+  using setuptools: python setup.py develop
+
+to update the from-git install:
+
+  cd /base/of/your/virtualenv
+  pip install --upgrade -e git+https://github.com/bear/bearlib.git#egg=bearlib

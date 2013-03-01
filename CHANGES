@@ -1,3 +1,10 @@
+2013-02-28  bear
+    * another "but it feels better" reconfig
+      what I need to do is stop reading other people's projects
+      and just settle down and be comfortable with my own style
+    * added some info to the README for installing
+    * added an item to the Makefile to init the virtualenv and
+      then to install the package in develop mode
 
 2012-12-03  bear
     * project setup

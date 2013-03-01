@@ -1,13 +1,15 @@
 from distutils.core import setup
 
+from bearlib import __version__, __author__, __contact__, __license__, __doc__
+
 setup(name='bearlib',
-      version='0.5.0',
-      author='Mike Taylor',
-      author_email='bear@code-bear.com',
+      version=__version__,
+      author=__author__,
+      author_email=__contact__,
       packages=['bearlib', ],
       url='http://pypi.python.org/pypi/bearlib/',
-      license='BSD License',
-      description='',
+      license=__license__,
+      description=__doc__,
       long_description=open('README').read(),
       classifiers=[
         'Development Status :: 4 - Beta',
