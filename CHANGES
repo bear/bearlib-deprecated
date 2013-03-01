@@ -1,4 +1,5 @@
 2013-02-28  bear
+    * added optional fileHandler param to bLogs()
     * another "but it feels better" reconfig
       what I need to do is stop reading other people's projects
       and just settle down and be comfortable with my own style

@@ -30,20 +30,23 @@ _ourPath = os.getcwd()
 _ourName = os.path.splitext(os.path.basename(sys.argv[0]))[0]
 log      = logging.getLogger(_ourName)
 
-def bLogs(logger, echo=True, chatty=False, debug=False, loglevel=logging.INFO, logpath=None, logname=None):
+def bLogs(logger, echo=True, chatty=False, debug=False, loglevel=logging.INFO, logpath=None, logname=None, fileHandler=None):
     """ Initialize logging
     """
     if logpath is not None:
         if logname is None:
             logname = _ourName
 
-        fileHandler   = logging.FileHandler(os.path.join(logpath, logname))
-        fileFormatter = logging.Formatter('%(asctime)s %(levelname)-7s %(processName)s: %(message)s')
+        if fileHandler is None:
+            _handler      = logging.FileHandler(os.path.join(logpath, logname))
+            fileFormatter = logging.Formatter('%(asctime)s %(levelname)-7s %(processName)s: %(message)s')
 
-        fileHandler.setFormatter(fileFormatter)
-
-        logger.addHandler(fileHandler)
-        logger.fileHandler = fileHandler
+            _handler.setFormatter(fileFormatter)
+            logger.addHandler(_handler)
+            logger.fileHandler = _handler
+        else:
+            logger.addHandler(fileHandler)
+            logger.fileHandler = fileHandler
 
     if echo:
         echoHandler = logging.StreamHandler()
