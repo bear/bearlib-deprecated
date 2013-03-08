@@ -170,9 +170,10 @@ class bConfig():
 
     def parseCommandLine(self):
         _config = { 'config':  ('-c', '--config',  'babble.cfg', 'Configuration Filename (optionally w/path'),
-                    'debug':   ('-d', '--debug',   False,        'Enable Debug'),
+                    'debug':   ('-d', '--debug',   False,        'Enable Debug?'),
                     'logpath': ('-l', '--logpath', '.',          'Path where log file is to be written'),
                     'logfile': ('',   '--logfile', 'babble.log', 'log filename'),
+                    'daemon':  ('',   '--daemon',  False,        'fork into a daemon?'),
                   }
 
         parser = OptionParser()
