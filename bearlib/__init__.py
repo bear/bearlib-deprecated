@@ -24,6 +24,7 @@ import pwd
 import grp
 import types
 import signal
+import atexit
 import logging
 
 from optparse import OptionParser
@@ -206,6 +207,9 @@ class bConfig():
 
                         setattr(getattr(self, section), key, value)
 
+def shutdownLogging():
+    logging.shutdown()
+
 def bLogs(config):
     if config.logfile is not None:
         handler       = logging.FileHandler(os.path.join(config.logpath, config.logfile))
@@ -214,6 +218,8 @@ def bLogs(config):
         handler.setFormatter(fileFormatter)
         log.addHandler(handler)
         log.fileHandler = handler
+
+    atexit.register(shutdownLogging)
 
     if config.debug:
         log.setLevel(logging.DEBUG)
