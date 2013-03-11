@@ -164,17 +164,18 @@ def relativeDelta(td):
 
     return s
 
-class bConfig():
-    def __init__(self):
+class bConfig(object):
+    def __init__(self, ourname='bearlib'):
         self.options = None
         self.args    = None
+        self.ourname = ourname
 
     def parseCommandLine(self):
-        _config = { 'config':  ('-c', '--config',  'babble.cfg', 'Configuration Filename (optionally w/path'),
-                    'debug':   ('-d', '--debug',   False,        'Enable Debug?'),
-                    'logpath': ('-l', '--logpath', '.',          'Path where log file is to be written'),
-                    'logfile': ('',   '--logfile', 'babble.log', 'log filename'),
-                    'daemon':  ('',   '--daemon',  False,        'fork into a daemon?'),
+        _config = { 'config':  ('-c', '--config',  '%s.cfg' % self.ourname, 'Configuration Filename (optionally w/path'),
+                    'debug':   ('-d', '--debug',   False,                   'Enable Debug?'),
+                    'logpath': ('-l', '--logpath', '.',                     'Path where log file is to be written'),
+                    'logfile': ('',   '--logfile', '%s.log' % self.ourname, 'log filename'),
+                    'daemon':  ('',   '--daemon',  False,                   'fork into a daemon?'),
                   }
 
         parser = OptionParser()
@@ -199,7 +200,7 @@ class bConfig():
 
             for section in cfg.sections():
                 for key, value in cfg.items(section):
-                    if section == 'babble':
+                    if section == self.ourname:
                         setattr(self, key, value)
                     else:
                         if not hasattr(self, section):
