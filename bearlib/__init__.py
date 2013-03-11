@@ -32,7 +32,6 @@ from ConfigParser import SafeConfigParser
 
 
 _ourPath = os.getcwd()
-log      = logging.getLogger('bearlib')
 
 def pidWrite(pidFile):
     os.umask(077) # set umask for pid
@@ -211,7 +210,9 @@ class bConfig(object):
 def shutdownLogging():
     logging.shutdown()
 
-def bLogs(config):
+def bLogs(config, subprocess=False):
+    log = logging.getLogger(config.ourname)
+    
     if config.logfile is not None:
         handler       = logging.FileHandler(os.path.join(config.logpath, config.logfile))
         fileFormatter = logging.Formatter('%(asctime)s %(levelname)-7s %(processName)s: %(message)s')
