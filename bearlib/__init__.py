@@ -32,7 +32,7 @@ from ConfigParser import SafeConfigParser
 
 
 _ourPath = os.getcwd()
-log      = logging.getLogger('babble')
+log      = logging.getLogger('bearlib')
 
 def pidWrite(pidFile):
     os.umask(077) # set umask for pid
@@ -78,7 +78,7 @@ def daemonize(config):
         raise Exception('gid is a required configuration item')
 
     if isRunning(config.pidfile):
-        log.error('Babble is still running. Exiting')
+        log.error('Our PID is still active. Exiting')
         sys.exit(1)
     else:
         if os.fork() == 0:
