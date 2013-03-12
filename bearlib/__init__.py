@@ -8,7 +8,7 @@ bearlib
 
 """
 
-VERSION = (0, 5, 2, "alpha")
+VERSION = (0, 5, 3, "alpha")
 
 __author__    = 'bear (Mike Taylor)'
 __contact__   = 'bear@bear.im'
@@ -212,7 +212,7 @@ def shutdownLogging():
 
 def bLogs(config, subprocess=False):
     log = logging.getLogger(config.ourname)
-    
+
     if config.logfile is not None:
         handler       = logging.FileHandler(os.path.join(config.logpath, config.logfile))
         fileFormatter = logging.Formatter('%(asctime)s %(levelname)-7s %(processName)s: %(message)s')
