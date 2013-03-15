@@ -111,6 +111,32 @@ def daemonize(config):
 
     os.umask(077)
 
+def escXML(text, escape_quotes=False):
+    if type(text) != types.UnicodeType:
+        if type(text) == types.IntType:
+            s = str(text)
+        else:
+            s = text
+        s = list(unicode(s, 'utf-8', 'ignore'))
+    else:
+        s = list(text)
+
+    cc      = 0
+    matches = ('&', '<', '"', '>')
+
+    for c in s:
+        if c in matches:
+            if c == '&':
+                s[cc] = u'&amp;'
+            elif c == '<':
+                s[cc] = u'&lt;'
+            elif c == '>':
+                s[cc] = u'&gt;'
+            elif escape_quotes:
+                s[cc] = u'&quot;'
+        cc += 1
+    return ''.join(s)
+
 def relativeDelta(td):
     s = ''
     if td.days < 0:
@@ -192,14 +218,19 @@ class bConfig(object):
         for key in _config:
             setattr(self, key, getattr(self.options, key))
 
-    def loadConfigFile(self):
-        if os.path.isfile(self.config):
+    def loadConfigFile(self, configFile=None):
+        if configFile is None:
+            filename = self.config
+        else:
+            filename = configFile
+
+        if os.path.isfile(filename):
             cfg = SafeConfigParser()
-            cfg.readfp(open(self.config))
+            cfg.readfp(open(filename))
 
             for section in cfg.sections():
                 for key, value in cfg.items(section):
-                    if section == self.ourname:
+                    if section ==  self.ourname:
                         setattr(self, key, value)
                     else:
                         if not hasattr(self, section):
