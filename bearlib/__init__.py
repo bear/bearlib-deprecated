@@ -22,6 +22,7 @@ import os
 import sys
 import pwd
 import grp
+import json
 import types
 import signal
 import atexit
@@ -165,10 +166,7 @@ class bConfig(object):
         """
         jsonConfig = {}
         if os.path.isfile(filename):
-            try:
-                jsonConfig = json.loads(' '.join(open(filename, 'r').readlines()))
-            except:
-                raise Exception('error during loading of config file [%s]' % filename)
+            jsonConfig = json.loads(' '.join(open(filename, 'r').readlines()))
         return jsonConfig
 
 
