@@ -46,10 +46,10 @@ def bLogs(loggername, echo=True, debug=False, chatty=False, loglevel=logging.INF
     log = logging.getLogger(loggername)
 
     if fileHandler is None:
-        if logname is None:
+        if logfile is None:
             logFilename = _ourName
         else:
-            logFilename = logname
+            logFilename = logfile
 
         if '.log' not in logFilename:
             logFilename = '%s.log' % logFilename
