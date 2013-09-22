@@ -40,10 +40,10 @@ log.addHandler(logging.NullHandler())
 def shutdownLogging():
     logging.shutdown()
 
-def bLogs(logname, echo=True, debug=False, chatty=False, loglevel=logging.INFO, logpath=None, fileHandler=None):
+def bLogs(loggername, echo=True, debug=False, chatty=False, loglevel=logging.INFO, logfile=None, logpath=None, fileHandler=None):
     """ Initialize logging
     """
-    log = logging.getLogger(logname)
+    log = logging.getLogger(loggername)
 
     if fileHandler is None:
         if logname is None:
