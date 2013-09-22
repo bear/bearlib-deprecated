@@ -28,119 +28,113 @@ from optparse import OptionParser
 
 _ourPath = os.getcwd()
 _ourName = os.path.splitext(os.path.basename(sys.argv[0]))[0]
-log      = logging.getLogger(_ourName)
 
-def bLogs(logger, echo=True, chatty=False, debug=False, loglevel=logging.INFO, logpath=None, logname=None, fileHandler=None):
+log = logging.getLogger('bearlib')
+log.addHandler(logging.NullHandler())
+
+
+def bLogs(logname, echo=True, debug=False, chatty=False, loglevel=logging.INFO, logpath=None, fileHandler=None):
     """ Initialize logging
     """
-    if logpath is not None:
+
+    log = logging.getLogger(logname)
+
+    if fileHandler is None:
         if logname is None:
-            logname = _ourName
-
-        if fileHandler is None:
-            _handler      = logging.FileHandler(os.path.join(logpath, logname))
-            fileFormatter = logging.Formatter('%(asctime)s %(levelname)-7s %(processName)s: %(message)s')
-
-            _handler.setFormatter(fileFormatter)
-            logger.addHandler(_handler)
-            logger.fileHandler = _handler
+            logFilename = _ourName
         else:
-            logger.addHandler(fileHandler)
-            logger.fileHandler = fileHandler
+            logFilename = logname
+
+        if '.log' not in logFilename:
+            logFilename = '%s.log' % logFilename
+
+        if logpath is not None:
+            logFilename = os.path.join(logpath, logFilename)
+
+        _handler   = logging.FileHandler(logFilename)
+        _formatter = logging.Formatter('%(asctime)s %(levelname)-7s %(message)s')
+
+        _handler.setFormatter(_formatter)
+        log.addHandler(_handler)
+        # logging.fileHandler = _handler
+    else:
+        log.addHandler(fileHandler)
+        # logging.fileHandler = fileHandler
 
     if echo:
         echoHandler = logging.StreamHandler()
-
         if chatty:
             echoFormatter = logging.Formatter('%(asctime)s %(levelname)-7s %(processName)s[%(process)d]: %(message)s')
         else:
             echoFormatter = logging.Formatter('%(asctime)s %(levelname)-7s %(message)s')
-
         echoHandler.setFormatter(echoFormatter)
-
-        logger.addHandler(echoHandler)
+        log.addHandler(echoHandler)
 
     if debug:
-        logger.setLevel(loglevel)
+        log.setLevel(logging.DEBUG)
     else:
-        logger.setLevel(logging.DEBUG)
-
-# HACK
-# yes, I am loading a custom log config right after defining the helper routine
-# that does the log init
-# I have not found a way to enable console echoing during the config item creation
-# in a way that doesn't completely stink up the room!
-bLogs(log, echo=True, debug=True)
+        log.setLevel(loglevel)
 
 class bConfig(object):
-    def __init__(self, configFilename=None):
+    def __init__(self, config=None, filename=None, defaults=None):
         """ Parse command line parameters and populate the options object
         """
-        self.log            = logging.getLogger(_ourName)
-        self.options        = None
-        self.appPath        = _ourPath
-        self.configFilename = configFilename
-        self.config         = {}
+        self.appPath  = _ourPath
+        self.filename = filename
+        self._config  = { 'configFile':  ('-c', '--config',  self.filename,       'Configuration Filename (optionally w/path'),
+                          'debug':       ('-d', '--debug',   False,               'Enable Debug'),
+                          'echo':        ('-e', '--echo',    False,               'Enable log echo to the console'),
+                          'logpath':     ('-l', '--logpath', '',                  'Path where log file is to be written'),
+                          'logfile':     ('',   '--logfile', '%s.log' % _ourName, 'log filename'),
+                          'verbose':     ('-v', '--verbose', False,               'show extra output from remote commands'),
+                        }
 
-        # these are my normal defaults
-        self._defaults = { 'configFile':  ('-c', '--config',  self.configFilename, 'Configuration Filename (optionally w/path'),
-                           'debug':       ('-d', '--debug',   False,               'Enable Debug'),
-                           'echo':        ('-e', '--echo',    False,               'Enable log echo to the console'),
-                           'logpath':     ('-l', '--logpath', '',                  'Path where log file is to be written'),
-                           'logfile':     ('',   '--logfile', '%s.log' % _ourName, 'log filename'),
-                           'verbose':     ('-v', '--verbose', False,               'show extra output from remote commands'),
-                         }
+        if config is not None and type(config) is types.DictType:
+            for key in config:
+                self._config[key] = config[key]
+
+        if defaults is not None and type(defaults) is types.DictType:
+            self._defaults = defaults
+        else:
+            self._defaults = {}
+
+        self.load()
 
     def findConfigFile(self, paths=None, envVar=None):
         searchPaths = []
 
         if paths is not None:
             for path in paths:
-                log.debug('adding %s to the search path' % path)
                 searchPaths.append(path)
 
         for path in (_ourPath, os.path.expanduser('~')):
-            log.debug('adding %s to the search path' % path)
             searchPaths.append(path)
         
         if envVar is not None and envVar in os.environ:
             path = os.environ[envVar]
-            log.debug('adding %s to the search path' % path)
             searchPaths.append(path)
 
         for path in searchPaths:
-            s = os.path.join(path, self.configFilename)
+            s = os.path.join(path, self.filename)
             if os.path.isfile(s):
-                log.debug('configuation file found: %s' % s)
-                self.options.configFile = s
+                self.filename = s
 
     def addConfig(self, key, shortCmd='', longCmd='', defaultValue=None, helpText=''):
         if len(shortCmd) + len(longCmd) == 0:
-            log.error('You must provide either a shortCmd or a longCmd value - both cannot be empty')
+            raise Exception('You must provide either a shortCmd or a longCmd value - both cannot be empty')
         elif key is None and type(key) is types.StringType:
-            log.error('The configuration key must be a string')
+            raise Exception('The configuration key must be a string')
         else:
-            self.config[key] = (shortCmd, longCmd, defaultValue, helpText)
+            self._config[key] = (shortCmd, longCmd, defaultValue, helpText)
 
-    def load(self, defaults=None, configPaths=None, configEnvVar=None):
-        parser        = OptionParser()
-        self.defaults = {}
+    def load(self, configPaths=None, configEnvVar=None):
+        parser = OptionParser()
 
-        if defaults is not None:
-            for key in defaults:
-                self.defaults[key] = defaults[key]
+        for key in self._config:
+            shortCmd, longCmd, defaultValue, helpText = self._config[key]
 
-        # load my config items, but just in case the caller has other ideas
-        # do not load them if the key is already present
-        # TODO need to add some way to also cross check short/long command values
-        for key in self._defaults:
-            if key not in self.config:
-                self.config[key] = self._defaults[key]
-
-        for key in self.config:
-            items = self.config[key]
-
-            (shortCmd, longCmd, defaultValue, helpText) = items
+            if key in self._defaults:
+                defaultValue = self._defaults[key]
 
             if type(defaultValue) is types.BooleanType:
                 parser.add_option(shortCmd, longCmd, dest=key, action='store_true', default=defaultValue, help=helpText)
@@ -149,25 +143,22 @@ class bConfig(object):
 
         (self.options, self.args) = parser.parse_args()
 
-        if self.options.configFile is not None:
-            self.findConfigFile(configPaths, configEnvVar)
-            self.options.config = self.loadJSON(self.options.configFile)
+        self.filename = getattr(self.options, 'configFile', self.filename)
 
-        bLogs(self.log, echo=getattr(self.options, 'echo', False), 
-                        debug=getattr(self.options, 'debug', False), 
-                        logpath=getattr(self.options, 'logpath', None), 
-                        logname=getattr(self.options, 'logfile', None))
+        if self.filename is not None:
+            self.findConfigFile(configPaths, configEnvVar)
+            config = self.loadJson(self.filename)
+
+            for key in config:
+                setattr(self.options, key, config[key])
 
     def loadJson(self, filename):
         """ Read, parse and return given Json config file
         """
         jsonConfig = {}
-
         if os.path.isfile(filename):
             try:
-                log.debug('attempting to load json config file [%s]' % filename)
                 jsonConfig = json.loads(' '.join(open(filename, 'r').readlines()))
             except:
-                log.error('error during loading of config file [%s]' % filename, exc_info=True)
-
+                raise Exception('error during loading of config file [%s]' % filename)
         return jsonConfig
