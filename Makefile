@@ -13,10 +13,11 @@ dev: init
 	pip install --upgrade -e .
 
 test:
-	nosetests tests
+	nosetests --verbosity=2 tests
 
 upload: check
 	python setup.py sdist upload
+	python setup.py bdist_wheel upload
 
 clean:
 	python setup.py clean

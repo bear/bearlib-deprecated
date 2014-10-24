@@ -1,3 +1,9 @@
+2014-10-24  bear
+    * changed LICENSE to MIT
+    * refactored setup.py to be more modern
+    * added config helper
+    * lots of cleanup
+
 2013-02-28  bear
     * added a sanity check for the virtualenv to the init and
       dev makefile targets

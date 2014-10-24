@@ -7,7 +7,13 @@ I used to just copy the directory into each project...
 
 yes, a build/release person was breaking *all* the rules - *sigh*
 
-to install from git:
+Install
+=======
+from PyPI
+
+  pip install bearlib
+
+from git
 
   cd /base/of/your/virtualenv
   
