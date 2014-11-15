@@ -1,7 +1,11 @@
 bearlib
-=======
 
 A simple collection of helper routines that I use in a lot of projects.
+
+.. image:: https://pypip.in/wheel/bearlib/badge.png
+    :target: https://pypi.python.org/pypi/bearlib/
+    :alt: Wheel Status
+
 
 I used to just copy the directory into each project...
 
@@ -9,18 +13,19 @@ yes, a build/release person was breaking *all* the rules - *sigh*
 
 Config
 ======
-A dictionary based config class.
+
+A dictionary based config class::
 
     c = Config({ 'a': 1, 'b': 2, 'c': {'d': 1}}
     print("c.a =", c.a)
     print("c.c.d" =", c.c.d)
 
-generates
+generates::
 
     c.a = 1
     c.c.d = 1
 
-It also has three helper methods:
+It also has three helper methods::
 
     fromDict(dictionary)
     fromJson(filename)
@@ -38,19 +43,22 @@ a dictionary and then passes that to fromDict() for storage.
 
 Install
 =======
-from PyPI
+from PyPI::
 
-  pip install bearlib
+    pip install bearlib
 
-from git
+from git::
 
-  cd /base/of/your/virtualenv
-  
-  using pip: pip install -e git+https://github.com/bear/bearlib.git#egg=bearlib
-
-  using setuptools: python setup.py develop
+    cd /base/of/your/virtualenv
+    pip install -e git+https://github.com/bear/bearlib.git#egg=bearlib
 
 to update the from-git install:
 
-  cd /base/of/your/virtualenv
-  pip install --upgrade -e git+https://github.com/bear/bearlib.git#egg=bearlib
+    cd /base/of/your/virtualenv
+    pip install --upgrade -e git+https://github.com/bear/bearlib.git#egg=bearlib
+
+Tests
+=====
+From the source directory::
+
+    make test

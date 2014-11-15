@@ -4,7 +4,7 @@ import os
 import unittest
 import datetime
 
-from bearlib import normalizeFilename, relativeDelta
+from bearlib.tools import normalizeFilename, relativeDelta
 
 
 class TestNormalize(unittest.TestCase):

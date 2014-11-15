@@ -1,12 +1,6 @@
-logs.py
 """
 :copyright: (c) 2014 by Mike Taylor
 :license: MIT, see LICENSE for more details.
-
-Config class that can be accessed using attributes.
-Has helper methods to load from etcd and json.
-
-Can be initialized using a dictionary.
 """
 
 import os
@@ -27,7 +21,7 @@ def shutdownLogging():
     logging.shutdown()
 
 def Logs(loggername, echo=True, debug=False, chatty=False, loglevel=logging.INFO, logfile=None, logpath=None, fileHandler=None):
-    """ Initialize logging
+    """Initialize logging
     """
     log = logging.getLogger(loggername)
 

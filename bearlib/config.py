@@ -18,6 +18,31 @@ except:
 
 from optparse import OptionParser
 
+_ourPath = os.getcwd()
+_ourName = os.path.splitext(os.path.basename(sys.argv[0]))[0]
+
+
+def findConfigFile(filename, paths=None, envVar=None):
+    searchPaths = []
+    result      = []
+
+    if paths is not None:
+        for path in paths:
+            searchPaths.append(path)
+
+    for path in (_ourPath, os.path.expanduser('~')):
+        searchPaths.append(path)
+    
+    if envVar is not None and envVar in os.environ:
+        path = os.environ[envVar]
+        searchPaths.append(path)
+
+    for path in searchPaths:
+        s = os.path.join(path, filename)
+        if os.path.isfile(s):
+            result.append(s)
+
+    return result
 
 # derived from https://stackoverflow.com/a/3031270
 class Config(dict):
