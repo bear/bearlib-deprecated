@@ -4,6 +4,7 @@ ifndef VIRTUAL_ENV
 endif
 
 init: venv
+	pip install wheel
 	pip install nose
 
 dev: init

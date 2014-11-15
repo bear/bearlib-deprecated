@@ -3,7 +3,7 @@
 :license: MIT, see LICENSE for more details.
 """
 
-VERSION = (0, 7, 0, "")
+VERSION = (0, 7, 1, "")
 
 __author__    = 'bear (Mike Taylor)'
 __contact__   = 'bear@bear.im'
