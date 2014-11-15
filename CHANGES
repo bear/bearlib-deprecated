@@ -1,3 +1,8 @@
+2014-11-15  bear
+    * bumped version
+    * cleaned up Makefile to not install things that modern
+      python versions don't need
+
 2014-10-24  bear
     * changed LICENSE to MIT
     * refactored setup.py to be more modern

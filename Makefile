@@ -4,10 +4,7 @@ ifndef VIRTUAL_ENV
 endif
 
 init: venv
-	pip install distribute
 	pip install nose
-	pip install docutils
-	pip install -r requirements.txt
 
 dev: init
 	pip install --upgrade -e .
