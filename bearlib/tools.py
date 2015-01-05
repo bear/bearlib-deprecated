@@ -1,15 +1,34 @@
 """
-:copyright: (c) 2014 by Mike Taylor
+:copyright: (c) 2014-2015 by Mike Taylor
 :license: MIT, see LICENSE for more details.
 """
 
 import os
 import types
+from urlparse import urlparse
 
 
 def normalizeFilename(filename):
+    """Take a given filename and return the normalized version of it.
+    Where ~/ is expanded to the full OS specific home directory and all
+    relative path elements are resolved.
+    """ 
     result = os.path.expanduser(filename)
     result = os.path.abspath(result)
+    return result
+
+def baseDomain(domain, includeScheme=True):
+    """Return only the network location portion of the given domain
+    unless includeScheme is True
+    """
+    result = ''
+    url    = urlparse(domain)
+    if includeScheme:
+        result = '%s://' % url.scheme
+    if len(url.netloc) == 0:
+        result += url.path
+    else:
+        result += url.netloc
     return result
 
 def pidWrite(pidFile):
