@@ -1,4 +1,7 @@
 """
+:copyright: (c) 2012 - 2015 by Mike Taylor
+:license: MIT, see LICENSE for more details.
+
 Events class to allow event handlers
 to be called for named events.
 

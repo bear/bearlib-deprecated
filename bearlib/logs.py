@@ -1,5 +1,5 @@
 """
-:copyright: (c) 2014 by Mike Taylor
+:copyright: (c) 2012 - 2015 by Mike Taylor
 :license: MIT, see LICENSE for more details.
 """
 
