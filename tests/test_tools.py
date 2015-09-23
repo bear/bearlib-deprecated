@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import os
-import unittest
 import datetime
+import unittest
 
 from bearlib.tools import normalizeFilename, relativeDelta
 
