@@ -21,8 +21,6 @@ upload: check
 clean:
 	python setup.py clean
 
-distclean: clean dist
-
 dist: check
 	python setup.py sdist
 
