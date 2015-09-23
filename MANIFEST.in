@@ -3,3 +3,5 @@ include CHANGES
 include LICENSE
 include Makefile
 include requirements.txt
+include *.py
+recursive-include tests *

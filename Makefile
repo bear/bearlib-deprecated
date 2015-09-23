@@ -6,6 +6,7 @@ endif
 init: venv
 	pip install wheel
 	pip install nose
+	pip install check-manifest
 
 dev: init
 	pip install --upgrade -e .
@@ -26,4 +27,5 @@ dist: check
 	python setup.py sdist
 
 check:
+	check-manifest
 	python setup.py check
