@@ -3,9 +3,8 @@
 import os, sys
 import unittest
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from bearlib.events import Events
+
 
 post_url  = "https://bear.im/bearlog/2013/325/indiewebify-and-the-new-site.html"
 
