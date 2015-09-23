@@ -43,7 +43,7 @@ a dictionary and then passes that to fromDict() for storage.
 
 Events
 ======
-Right now I'm going to use a very simple "plugin" style for event hanlders where any .py file found in a directory is imported as a module.
+Right now I'm going to use a very simple "plugin" style for event handlers where any .py file found in a directory is imported as a module.
 
 This will, I think, let me use the event plugins via the command line, but also via WebHooks because I can create a Flask listener for WebHook urls and then call the defined handler for a given event.
 
