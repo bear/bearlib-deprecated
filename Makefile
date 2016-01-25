@@ -41,10 +41,10 @@ lint: clean
 	flake8 --exclude=env . > violations.flake8.txt
 
 test: lint
-	python setup.py test
+	python setup.py test --addopts "--ignore=venv"
 
 coverage: clean lint
-	coverage run --source=bearlib setup.py test
+	coverage run --source=bearlib setup.py test --addopts "--ignore=venv"
 	coverage html
 	coverage report
 
