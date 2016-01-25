@@ -11,7 +11,9 @@ A simple collection of helper routines that I use in a lot of projects.
 .. image:: https://pypip.in/wheel/bearlib/badge.png
     :target: https://pypi.python.org/pypi/bearlib/
     :alt: Wheel Status
-
+.. image:: https://codecov.io/github/bear/bearlib/coverage.svg?branch=master
+    :target: https://codecov.io/github/bear/bearlib?branch=master
+    :alt: CodeCov Report
 
 I used to just copy the directory into each project...
 

@@ -37,16 +37,13 @@ lint: clean
 test: lint
 	python setup.py test
 
-integration: clean lint
-	py.test tests -m "integration"
-
 coverage: clean lint
 	coverage run --source=bearlib setup.py test
 	coverage html
 	coverage report
 
-ci: clean lint integration coverage
-	codecov
+ci: clean lint coverage
+	source ~/bin/codecov-bearlib && codecov
 
 check: ci
 	check-manifest
