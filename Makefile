@@ -1,5 +1,11 @@
 .PHONY: help clean
 
+ifeq ($(wildcard .codecov-token),)
+  TOKEN = source .codecov-token
+else
+	TOKEN =
+endif
+
 guard-%:
 	@ if [ "${${*}}" == "" ]; then \
 	  echo "Environment variable $* not set"; \
@@ -43,7 +49,7 @@ coverage: clean lint
 	coverage report
 
 ci: clean lint coverage
-	source .codecov-token && codecov
+	@CODECOV_TOKEN=$(CODECOV_TOKEN) && codecov
 
 check: ci
 	check-manifest
