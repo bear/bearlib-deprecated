@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-:copyright: (c) 2012-2015 by Mike Taylor
-:license: MIT, see LICENSE for more details.
+:copyright: (c) 2012-2016 by Mike Taylor
+:license: CC0 1.0 Universal, see LICENSE for more details.
 
 Config class that can be accessed using attributes.
 Has helper methods to load from etcd and json.
@@ -9,8 +9,10 @@ Has helper methods to load from etcd and json.
 Can be initialized using a dictionary.
 """
 
-import os, sys
+import os
+import sys
 import json
+import types
 try:
     import etcd
     _etcd = True
@@ -33,7 +35,7 @@ def findConfigFile(filename, paths=None, envVar=None):
 
     for path in (_ourPath, os.path.expanduser('~')):
         searchPaths.append(path)
-    
+
     if envVar is not None and envVar in os.environ:
         path = os.environ[envVar]
         searchPaths.append(path)
@@ -48,13 +50,14 @@ def findConfigFile(filename, paths=None, envVar=None):
 # derived from https://stackoverflow.com/a/3031270
 class Config(dict):
     marker = object()
+
     def __init__(self, value=None):
         if value is None:
             pass
         elif isinstance(value, dict):
             self.fromDict(value)
         else:
-            raise TypeError, 'expected dict'
+            raise TypeError('Dictionary expected')
 
     def __setitem__(self, key, value):
         if isinstance(value, dict) and not isinstance(value, Config):
@@ -134,11 +137,11 @@ class bConfig(object):
                           'verbose':     ('-v', '--verbose', False,               'show extra output from remote commands'),
                         }
 
-        if config is not None and type(config) is types.DictType:
+        if config is not None and isinstance(config, types.DictType):
             for key in config:
                 self._config[key] = config[key]
 
-        if defaults is not None and type(defaults) is types.DictType:
+        if defaults is not None and isinstance(defaults, types.DictType):
             self._defaults = defaults
         else:
             self._defaults = {}
@@ -154,7 +157,7 @@ class bConfig(object):
 
         for path in (_ourPath, os.path.expanduser('~')):
             searchPaths.append(path)
-        
+
         if envVar is not None and envVar in os.environ:
             path = os.environ[envVar]
             searchPaths.append(path)
@@ -167,7 +170,7 @@ class bConfig(object):
     def addConfig(self, key, shortCmd='', longCmd='', defaultValue=None, helpText=''):
         if len(shortCmd) + len(longCmd) == 0:
             raise Exception('You must provide either a shortCmd or a longCmd value - both cannot be empty')
-        elif key is None and type(key) is types.StringType:
+        elif key is None and isinstance(key, types.StringType):
             raise Exception('The configuration key must be a string')
         else:
             self._config[key] = (shortCmd, longCmd, defaultValue, helpText)
@@ -181,7 +184,7 @@ class bConfig(object):
             if key in self._defaults:
                 defaultValue = self._defaults[key]
 
-            if type(defaultValue) is types.BooleanType:
+            if isinstance(defaultValue, types.BooleanType):
                 parser.add_option(shortCmd, longCmd, dest=key, action='store_true', default=defaultValue, help=helpText)
             else:
                 parser.add_option(shortCmd, longCmd, dest=key, default=defaultValue, help=helpText)
@@ -204,5 +207,3 @@ class bConfig(object):
         if os.path.isfile(filename):
             jsonConfig = json.loads(' '.join(open(filename, 'r').readlines()))
         return jsonConfig
-
-

@@ -1,4 +1,9 @@
-"""Test Event Handler
+# -*- coding: utf-8 -*-
+"""
+:copyright: (c) 2012-2016 by Mike Taylor
+:license: CC0 1.0 Universal, see LICENSE for more details.
+
+Test Event Handler
 """
 
 test_results = { 'post': None

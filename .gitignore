@@ -1,12 +1,17 @@
-.DS_Store
-
 *.py[co]
-*.cfg
 MANIFEST
+
+# C extensions
+*.so
+
+.DS_Store
+__pycache__
+.cache
 
 # Packages
 *.egg
 *.egg-info
+.eggs
 dist
 build
 eggs
@@ -16,7 +21,9 @@ var
 sdist
 develop-eggs
 include
+.installed.cfg
 lib
+lib64
 
 # PyCharm
 .Python
@@ -29,9 +36,17 @@ pip-log.txt
 # Unit test / coverage reports
 .coverage
 .tox
+nosetests.xml
+htmlcov
+coverage.xml
+violations.flake8.txt
 
 #Translations
 *.mo
 
 #Mr Developer
 .mr.developer.cfg
+
+.project
+.pydevproject
+.python-version

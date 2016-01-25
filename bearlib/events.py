@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-:copyright: (c) 2012-2015 by Mike Taylor
-:license: MIT, see LICENSE for more details.
+:copyright: (c) 2012-2016 by Mike Taylor
+:license: CC0 1.0 Universal, see LICENSE for more details.
 
 Events class to allow event handlers
 to be called for named events.
@@ -28,7 +28,8 @@ For example.py:
         pass
 """
 
-import os, sys
+import os
+import sys
 import imp
 
 _ourPath = os.getcwd()
@@ -56,5 +57,5 @@ class Events(object):
             try:
                 if hasattr(module, eventName):
                     return getattr(module, eventName)(*args)
-            except Exception, e:
-                raise Exception('error during call %s.%s(%s)' % (eventClass, eventName, ','.join(args)))
+            except Exception:
+                raise Exception('error during call %s.%s(%s)'.format(eventClass, eventName, ','.join(args)))

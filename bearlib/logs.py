@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-:copyright: (c) 2012-2015 by Mike Taylor
-:license: MIT, see LICENSE for more details.
+:copyright: (c) 2012-2016 by Mike Taylor
+:license: CC0 1.0 Universal, see LICENSE for more details.
 """
 
 import os
 import sys
-import pwd
-import grp
-import json
-import types
-import signal
 import atexit
 import logging
 

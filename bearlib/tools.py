@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-:copyright: (c) 2012-2015 by Mike Taylor
-:license: MIT, see LICENSE for more details.
+:copyright: (c) 2012-2016 by Mike Taylor
+:license: CC0 1.0 Universal, see LICENSE for more details.
 """
 
 import os
 import types
+import logging
 from urlparse import urlparse
 
 
@@ -13,7 +14,7 @@ def normalizeFilename(filename):
     """Take a given filename and return the normalized version of it.
     Where ~/ is expanded to the full OS specific home directory and all
     relative path elements are resolved.
-    """ 
+    """
     result = os.path.expanduser(filename)
     result = os.path.abspath(result)
     return result
@@ -33,7 +34,7 @@ def baseDomain(domain, includeScheme=True):
     return result
 
 def pidWrite(pidFile):
-    os.umask(077) # set umask for pid
+    os.umask(077)  # set umask for pid
     with open(pidFile, "w") as f:
         f.write(str(os.getpid()))
 
@@ -58,12 +59,12 @@ def isRunning(pidFile):
             os.kill(pid, 0)
             return True
         except OSError:
-            log.warn('pid %d for %s found.' % (pid, pidFile))
+            logging.warn('pid %d for %s found.' % (pid, pidFile))
             return False
 
 def escXML(text, escape_quotes=False):
-    if type(text) != types.UnicodeType:
-        if type(text) == types.IntType:
+    if not isinstance(text, types.UnicodeType):
+        if isinstance(text, types.IntType):
             s = str(text)
         else:
             s = text
