@@ -2,6 +2,12 @@ bearlib
 
 A simple collection of helper routines that I use in a lot of projects.
 
+.. image:: https://requires.io/github/bear/bearlib/requirements.svg?branch=master
+    :target: https://requires.io/github/bear/bearlib/requirements/?branch=master
+    :alt: Requirements Status
+.. image:: https://circleci.com/gh/bear/bearlib.svg?style=svg
+    :target: https://circleci.com/gh/bear/bearlib
+    :alt: Build Status
 .. image:: https://pypip.in/wheel/bearlib/badge.png
     :target: https://pypi.python.org/pypi/bearlib/
     :alt: Wheel Status
