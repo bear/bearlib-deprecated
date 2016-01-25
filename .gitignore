@@ -40,6 +40,7 @@ nosetests.xml
 htmlcov
 coverage.xml
 violations.flake8.txt
+.codecov-token
 
 #Translations
 *.mo

@@ -43,7 +43,7 @@ coverage: clean lint
 	coverage report
 
 ci: clean lint coverage
-	source ~/bin/codecov-bearlib && codecov
+	source .codecov-token && codecov
 
 check: ci
 	check-manifest
