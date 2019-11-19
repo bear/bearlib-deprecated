@@ -30,7 +30,13 @@ For example.py:
 
 import os
 import sys
-import imp
+
+try:
+    # python 3
+    from importlib import load_source
+except ImportError:
+    from imp import load_source
+
 
 _ourPath = os.getcwd()
 _ourName = os.path.splitext(os.path.basename(sys.argv[0]))[0]
@@ -46,7 +52,7 @@ class Events(object):
             for filename in filenames:
                 moduleName, moduleExt = os.path.splitext(os.path.basename(filename))
                 if moduleExt == '.py':
-                    module = imp.load_source(moduleName, os.path.join(self.handlersPath, filename))
+                    module = load_source(moduleName, os.path.join(self.handlersPath, filename))
                     if hasattr(module, 'setup'):
                         self.handlers[moduleName.lower()] = module
 
