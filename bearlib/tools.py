@@ -7,7 +7,12 @@
 import os
 import types
 import logging
-from urlparse import urlparse
+
+try:
+    # python 3
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 
 def normalizeFilename(filename):
