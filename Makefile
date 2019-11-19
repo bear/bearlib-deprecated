@@ -14,7 +14,6 @@ guard-%:
 help:
 	@echo "This project assumes that an active Python virtualenv is present."
 	@echo "The following make targets are available:"
-	@echo "  update      update python dependencies"
 	@echo "  clean       remove unwanted files"
 	@echo "  lint        flake8 lint check"
 	@echo "  test        run unit tests"
@@ -24,13 +23,6 @@ help:
 	@echo "  dist        build source distribution"
 	@echo "  all         refresh and run all tests and generate coverage reports"
 
-update: guard-PYENV_VIRTUALENV_INIT
-	pip install -U pip
-	pip install -Ur requirements.txt
-
-update-all: guard-PYENV_VIRTUALENV_INIT update
-	pip install -Ur requirements-test.txt
-
 clean:
 	rm -fr build
 	rm -fr dist
@@ -38,28 +30,28 @@ clean:
 	find . -name '*.pyo' -exec rm -f {} \;
 
 lint: clean
-	flake8 --exclude=env . > violations.flake8.txt
+	pipenv run flake8 --exclude=env . > violations.flake8.txt
 
 test: lint
-	python setup.py test --addopts "--ignore=venv"
+	pipenv run python setup.py test --addopts "--ignore=venv"
 
 coverage: clean lint
-	coverage run --source=bearlib setup.py test --addopts "--ignore=venv"
-	coverage html
-	coverage report
+	pipenv run coverage run --source=bearlib setup.py test --addopts "--ignore=venv"
+	pipenv run coverage html
+	pipenv run coverage report
 
 ci: clean lint coverage
-	@CODECOV_TOKEN=$(CODECOV_TOKEN) && codecov
+	@CODECOV_TOKEN=$(CODECOV_TOKEN) && pipenv run codecov
 
 check: ci
-	check-manifest
-	python setup.py check
+	pipenv run check-manifest
+	pipenv run python setup.py check
 
 upload: check
-	python setup.py sdist upload
-	python setup.py bdist_wheel upload
+	pipenv run python setup.py sdist upload
+	pipenv run python setup.py bdist_wheel upload
 
 dist: check
-	python setup.py sdist
+	pipenv run python setup.py sdist
 
 all: clean update-all lint integration coverage
