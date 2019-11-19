@@ -7,6 +7,7 @@
 import os
 import types
 import logging
+from builtins import str
 
 try:
     # python 3
@@ -73,7 +74,7 @@ def escXML(text, escape_quotes=False):
             s = str(text)
         else:
             s = text
-        s = list(unicode(s, 'utf-8', 'ignore'))
+        s = list(u"%s" % str(s))
     else:
         s = list(text)
 
