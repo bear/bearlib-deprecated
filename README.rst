@@ -8,7 +8,7 @@ A simple collection of helper routines that I use in a lot of projects.
 .. image:: https://requires.io/github/bear/bearlib/requirements.svg?branch=master
     :target: https://requires.io/github/bear/bearlib/requirements/?branch=master
     :alt: Requirements Status
-.. image:: https://pypip.in/wheel/bearlib/badge.png
+.. image:: https://img.shields.io/pypi/wheel/bearlib.svg
     :target: https://pypi.python.org/pypi/bearlib/
     :alt: Wheel Status
 .. image:: https://codecov.io/github/bear/bearlib/coverage.svg?branch=master
