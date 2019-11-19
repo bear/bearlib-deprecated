@@ -34,7 +34,7 @@ def baseDomain(domain, includeScheme=True):
     return result
 
 def pidWrite(pidFile):
-    os.umask(077)  # set umask for pid
+    os.umask(0o77)  # set umask for pid
     with open(pidFile, "w") as f:
         f.write(str(os.getpid()))
 
