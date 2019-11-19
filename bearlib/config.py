@@ -16,7 +16,7 @@ import types
 try:
     import etcd
     _etcd = True
-except:
+except ImportError:
     _etcd = False
 
 from optparse import OptionParser

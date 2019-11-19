@@ -39,7 +39,9 @@ def read(filename):
     with codecs.open(os.path.join(cwd, filename), 'rb', 'utf-8') as h:
         return h.read()
 
+
 metadata = read(os.path.join(cwd, 'bearlib', '__init__.py'))
+
 
 def extract_metaitem(meta):
     # swiped from https://hynek.me 's attr package
@@ -48,6 +50,7 @@ def extract_metaitem(meta):
     if meta_match:
         return meta_match.group(1)
     raise RuntimeError('Unable to find __{meta}__ string.'.format(meta=meta))
+
 
 if __name__ == '__main__':
   setup(name='bearlib',
