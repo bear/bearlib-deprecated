@@ -1,30 +1,32 @@
 .PHONY: help clean
 
 help:
-	@echo "  env         install all production dependencies"
+	@echo "  env         install all dependencies"
+	@echo "  dev         install all development dependencies"
 	@echo "  clean       remove unwanted stuff"
 	@echo "  lint        check style with pycodestyle"
 	@echo "  test        run tests"
 	@echo "  coverage    run codecov"
-
-env:
-	pipenv install --dev
-	pipenv install black --dev --pre
-	pipenv install "-e ."
-
-info:
-	@pipenv run python --version
-	@pipenv check
-	@pipenv graph
 
 clean:
 	rm -rf build
 	rm -rf dist
 	rm -f violations.flake8.txt
 	pipenv clean
+
+dev:
+	pipenv install --dev
+	pipenv install black --dev --pre
+
+env: clean
 	pipenv install
 
-lint: clean
+info: env
+	@pipenv run python --version
+	@pipenv check
+	@pipenv graph
+
+lint:
 	pipenv run flake8 --tee --output-file=violations.flake8.txt
 
 test: lint
@@ -37,7 +39,7 @@ coverage: clean
 	pipenv run coverage html
 	pipenv run codecov
 
-check: clean
+check: env
 	pipenv run check-manifest -v
 
 dist: check

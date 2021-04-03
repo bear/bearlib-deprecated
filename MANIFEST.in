@@ -5,7 +5,7 @@ include Makefile
 include Pipfile
 include Pipfile.lock
 include Makefile
-include pytest.ini
+include .coveragerc
 include pyproject.toml
 include *.py
 recursive-include tests *.py
