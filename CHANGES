@@ -1,3 +1,11 @@
+2021-04-03  bear
+    * bumped version
+    * Updated all code to Python 3.9
+    * moved from pylint to flake8
+    * adjusted module structure to use src/ to fit with latest best practices
+    * disabled tests for events.py - this needs to be either tossed or rewritten
+    * updated package building to latest and to use a static config
+
 2014-11-15  bear
     * bumped version
     * cleaned up Makefile to not install things that modern
