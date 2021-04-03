@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-:copyright: (c) 2012-2016 by Mike Taylor
+:copyright: (c) 2012-2020 by Mike Taylor
 :license: CC0 1.0 Universal, see LICENSE for more details.
 
 Config class that can be accessed using attributes.
@@ -12,14 +12,13 @@ Can be initialized using a dictionary.
 import os
 import sys
 import json
-import types
+import argparse
 try:
     import etcd
     _etcd = True
 except ImportError:
     _etcd = False
 
-from optparse import OptionParser
 
 _ourPath = os.getcwd()
 _ourName = os.path.splitext(os.path.basename(sys.argv[0]))[0]
@@ -27,7 +26,7 @@ _ourName = os.path.splitext(os.path.basename(sys.argv[0]))[0]
 
 def findConfigFile(filename, paths=None, envVar=None):
     searchPaths = []
-    result      = []
+    result = []
 
     if paths is not None:
         for path in paths:
@@ -47,8 +46,9 @@ def findConfigFile(filename, paths=None, envVar=None):
 
     return result
 
+
 # derived from https://stackoverflow.com/a/3031270
-class Config(dict):
+class Config():
     marker = object()
 
     def __init__(self, value=None):
@@ -123,25 +123,26 @@ class Config(dict):
                 self.fromDict(r)
 
 
-class bConfig(object):
+class bConfig():
     def __init__(self, config=None, filename=None, defaults=None):
         """ Parse command line parameters and populate the options object
         """
-        self.appPath  = _ourPath
+        self.appPath = _ourPath
         self.filename = filename
-        self._config  = { 'configFile':  ('-c', '--config',  self.filename,       'Configuration Filename (optionally w/path'),
-                          'debug':       ('-d', '--debug',   False,               'Enable Debug'),
-                          'echo':        ('-e', '--echo',    False,               'Enable log echo to the console'),
-                          'logpath':     ('-l', '--logpath', '',                  'Path where log file is to be written'),
-                          'logfile':     ('',   '--logfile', '%s.log' % _ourName, 'log filename'),
-                          'verbose':     ('-v', '--verbose', False,               'show extra output from remote commands'),
-                        }
+        self._config = {
+            'configFile': ('-c', '--config',  self.filename,       'Configuration Filename (optionally w/path'),
+            'debug':      ('-d', '--debug',   False,               'Enable Debug'),
+            'echo':       ('-e', '--echo',    False,               'Enable log echo to the console'),
+            'logpath':    ('-l', '--logpath', '',                  'Path where log file is to be written'),
+            'logfile':    ('',   '--logfile', '%s.log' % _ourName, 'log filename'),
+            'verbose':    ('-v', '--verbose', False,               'show extra output from remote commands'),
+        }
 
-        if config is not None and isinstance(config, types.DictType):
+        if config is not None and isinstance(config, dict):
             for key in config:
                 self._config[key] = config[key]
 
-        if defaults is not None and isinstance(defaults, types.DictType):
+        if defaults is not None and isinstance(defaults, dict):
             self._defaults = defaults
         else:
             self._defaults = {}
@@ -170,13 +171,12 @@ class bConfig(object):
     def addConfig(self, key, shortCmd='', longCmd='', defaultValue=None, helpText=''):
         if len(shortCmd) + len(longCmd) == 0:
             raise Exception('You must provide either a shortCmd or a longCmd value - both cannot be empty')
-        elif key is None and isinstance(key, types.StringType):
+        if key is None and isinstance(key, bytes):
             raise Exception('The configuration key must be a string')
-        else:
-            self._config[key] = (shortCmd, longCmd, defaultValue, helpText)
+        self._config[key] = (shortCmd, longCmd, defaultValue, helpText)
 
     def load(self, configPaths=None, configEnvVar=None):
-        parser = OptionParser()
+        parser = argparse.ArgumentParser()
 
         for key in self._config:
             shortCmd, longCmd, defaultValue, helpText = self._config[key]
@@ -184,19 +184,20 @@ class bConfig(object):
             if key in self._defaults:
                 defaultValue = self._defaults[key]
 
-            if isinstance(defaultValue, types.BooleanType):
-                parser.add_option(shortCmd, longCmd, dest=key, action='store_true', default=defaultValue, help=helpText)
+            if isinstance(defaultValue, bool):
+                parser.add_argument(longCmd, shortCmd, dest=key, action='store_true', default=defaultValue, help=helpText)
             else:
-                parser.add_option(shortCmd, longCmd, dest=key, default=defaultValue, help=helpText)
+                parser.add_argument(longCmd, shortCmd, dest=key, default=defaultValue, help=helpText)
 
-        (self.options, self.args) = parser.parse_args()
+        self.args = parser.parse_args()
+        self.options = {}
+        for key in self._config:
+            setattr(self.options, key, getattr(self.args, key))
 
         self.filename = getattr(self.options, 'configFile', self.filename)
-
         if self.filename is not None:
             self.findConfigFile(configPaths, configEnvVar)
             config = self.loadJson(self.filename)
-
             for key in config:
                 setattr(self.options, key, config[key])
 

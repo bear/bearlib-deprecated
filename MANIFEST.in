@@ -2,6 +2,14 @@ include README.rst
 include CHANGES
 include LICENSE
 include Makefile
-include requirements.txt
+include Pipfile
+include Pipfile.lock
+include Makefile
+include pytest.ini
+include pyproject.toml
 include *.py
 recursive-include tests *.py
+graft src
+prune .DS_Store
+prune .git
+prune .circleci

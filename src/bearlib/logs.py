@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-:copyright: (c) 2012-2016 by Mike Taylor
+:copyright: (c) 2012-2020 by Mike Taylor
 :license: CC0 1.0 Universal, see LICENSE for more details.
 """
 
@@ -13,8 +13,10 @@ import logging
 _ourPath = os.getcwd()
 _ourName = os.path.splitext(os.path.basename(sys.argv[0]))[0]
 
+
 def shutdownLogging():
     logging.shutdown()
+
 
 def Logs(loggername, echo=True, debug=False, chatty=False, loglevel=logging.INFO, logfile=None, logpath=None, fileHandler=None):
     """Initialize logging
@@ -33,7 +35,7 @@ def Logs(loggername, echo=True, debug=False, chatty=False, loglevel=logging.INFO
         if logpath is not None:
             logFilename = os.path.join(logpath, logFilename)
 
-        _handler   = logging.FileHandler(logFilename)
+        _handler = logging.FileHandler(logFilename)
         _formatter = logging.Formatter('%(asctime)s %(levelname)-7s %(message)s')
 
         _handler.setFormatter(_formatter)

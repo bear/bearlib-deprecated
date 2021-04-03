@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-:copyright: (c) 2012-2016 by Mike Taylor
+:copyright: (c) 2012-2020 by Mike Taylor
 :license: CC0 1.0 Universal, see LICENSE for more details.
 """
 
@@ -17,6 +17,7 @@ def test_normalize():
     assert normalizeFilename('foo.txt')   == os.path.join(cwd,  'foo.txt')
     assert normalizeFilename('~/foo.txt') == os.path.join(home, 'foo.txt')
     assert normalizeFilename('./foo.txt') == os.path.join(cwd,  'foo.txt')
+
 
 def TestRelativeDelta():
     assert relativeDelta(datetime.timedelta(0,   10))  == 'just now'
@@ -36,3 +37,6 @@ def TestRelativeDelta():
     assert relativeDelta(datetime.timedelta(2))        == 'in 2 days'
     assert relativeDelta(datetime.timedelta(8))        == 'in 1 weeks'
     assert relativeDelta(datetime.timedelta(40))       == 'in 1 months'
+    assert relativeDelta(datetime.timedelta(120))      == 'in 3 months'
+    assert relativeDelta(datetime.timedelta(360))      == 'in 12 months'
+    assert relativeDelta(datetime.timedelta(370))      == 'in 1 years'

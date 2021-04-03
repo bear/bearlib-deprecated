@@ -1,57 +1,47 @@
 .PHONY: help clean
 
-ifeq ($(wildcard .codecov-token),)
-  TOKEN = source .codecov-token
-else
-	TOKEN =
-endif
-
-guard-%:
-	@ if [ "${${*}}" == "" ]; then \
-	  echo "Environment variable $* not set"; \
-	fi
-
 help:
-	@echo "This project assumes that an active Python virtualenv is present."
-	@echo "The following make targets are available:"
-	@echo "  clean       remove unwanted files"
-	@echo "  lint        flake8 lint check"
-	@echo "  test        run unit tests"
-	@echo "  integration run integration tests"
-	@echo "  check       check if project is ready for packaging"
-	@echo "  upload      upload project to PyPI"
-	@echo "  dist        build source distribution"
-	@echo "  all         refresh and run all tests and generate coverage reports"
+	@echo "  env         install all production dependencies"
+	@echo "  clean       remove unwanted stuff"
+	@echo "  lint        check style with pycodestyle"
+	@echo "  test        run tests"
+	@echo "  coverage    run codecov"
+
+env:
+	pipenv install --dev
+	pipenv install black --dev --pre
+	pipenv install "-e ."
+
+info:
+	@pipenv run python --version
+	@pipenv check
+	@pipenv graph
 
 clean:
-	rm -fr build
-	rm -fr dist
-	find . -name '*.pyc' -exec rm -f {} \;
-	find . -name '*.pyo' -exec rm -f {} \;
+	rm -rf build
+	rm -rf dist
+	rm -f violations.flake8.txt
+	pipenv clean
+	pipenv install
 
 lint: clean
-	pipenv run flake8 --exclude=env . > violations.flake8.txt
+	pipenv run flake8 --tee --output-file=violations.flake8.txt
 
 test: lint
-	pipenv run python setup.py test --addopts "--ignore=venv"
+	pipenv install "-e ."
+	pipenv run pytest
 
-coverage: clean lint
-	pipenv run coverage run --source=bearlib setup.py test --addopts "--ignore=venv"
-	pipenv run coverage html
+coverage: clean
+	pipenv run coverage run -m pytest
 	pipenv run coverage report
+	pipenv run coverage html
+	pipenv run codecov
 
-ci: clean lint coverage
-	@CODECOV_TOKEN=$(CODECOV_TOKEN) && pipenv run codecov
-
-check: ci
-	pipenv run check-manifest
-	pipenv run python setup.py check
-
-upload: check
-	pipenv run python setup.py sdist upload
-	pipenv run python setup.py bdist_wheel upload
+check: clean
+	pipenv run check-manifest -v
 
 dist: check
-	pipenv run python setup.py sdist
+	pipenv run python -m build
 
-all: clean update-all lint integration coverage
+upload: dist
+	pipenv run python -m twine upload dist/*

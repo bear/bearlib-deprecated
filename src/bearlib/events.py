@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-:copyright: (c) 2012-2016 by Mike Taylor
+:copyright: (c) 2012-2020 by Mike Taylor
 :license: CC0 1.0 Universal, see LICENSE for more details.
 
 Events class to allow event handlers
@@ -30,38 +30,36 @@ For example.py:
 
 import os
 import sys
-
-try:
-    # python 3
-    from importlib import load_source
-except ImportError:
-    from imp import load_source
+import importlib
+from importlib import resources
 
 
 _ourPath = os.getcwd()
 _ourName = os.path.splitext(os.path.basename(sys.argv[0]))[0]
 
-class Events(object):
+
+class Events():
     def __init__(self, handlersPath=_ourPath):
-        self.handlers     = {}
+        self.handlers = {}
         self.handlersPath = os.path.abspath(os.path.expanduser(handlersPath))
         self.loadHandlers()
 
     def loadHandlers(self):
-        for (dirpath, dirnames, filenames) in os.walk(self.handlersPath):
-            for filename in filenames:
-                moduleName, moduleExt = os.path.splitext(os.path.basename(filename))
-                if moduleExt == '.py':
-                    module = load_source(moduleName, os.path.join(self.handlersPath, filename))
-                    if hasattr(module, 'setup'):
-                        self.handlers[moduleName.lower()] = module
+        files = resources.contents('./tests/test_event_handlers')
+        plugins = [f[:-3] for f in files if f.endswith(".py") and f[0] != "_"]
+        print(plugins)
+        for plugin in plugins:
+            print(f'{plugin}')
+            module = importlib.import_module(f"'test_event_handlers'.{plugin}")
+            print(module)
+            if hasattr(module, 'setup'):
+                self.handlers[f"'test_event_handlers'.{plugin}"] = module
+        print(self.handlers)
 
     def handle(self, eventClass, eventName, *args):
         eventClass = eventClass.lower()
         if eventClass in self.handlers:
             module = self.handlers[eventClass]
-            try:
-                if hasattr(module, eventName):
-                    return getattr(module, eventName)(*args)
-            except Exception:
-                raise Exception('error during call %s.%s(%s)'.format(eventClass, eventName, ','.join(args)))
+            if hasattr(module, eventName):
+                return getattr(module, eventName)(*args)
+        return None
