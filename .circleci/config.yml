@@ -6,7 +6,7 @@ jobs:
   build:
     working_directory: ~/bearlib
     docker:
-      - image: circleci/python:3.7
+      - image: circleci/python:3.9
         environment:
           PIPENV_VENV_IN_PROJECT: true
     steps:
