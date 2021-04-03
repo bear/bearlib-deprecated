@@ -16,7 +16,6 @@ clean:
 
 dev:
 	pipenv install --dev
-	pipenv install black --dev --pre
 
 env: clean
 	pipenv install
@@ -26,7 +25,7 @@ info: env
 	@pipenv check
 	@pipenv graph
 
-lint:
+lint: dev
 	pipenv run flake8 --tee --output-file=violations.flake8.txt
 
 test: lint
