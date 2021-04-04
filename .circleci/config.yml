@@ -15,4 +15,7 @@ jobs:
             make info
       - run:
           command: |
+            make dev
+      - run:
+          command: |
             make coverage
