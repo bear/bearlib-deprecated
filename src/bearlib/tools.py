@@ -14,9 +14,7 @@ def normalizeFilename(filename):
     Where ~/ is expanded to the full OS specific home directory and all
     relative path elements are resolved.
     """
-    result = os.path.expanduser(filename)
-    result = os.path.abspath(result)
-    return result
+    return os.path.abspath(os.path.expanduser(filename))
 
 
 def baseDomain(domain, includeScheme=True):
@@ -26,7 +24,8 @@ def baseDomain(domain, includeScheme=True):
     result = ''
     url = urlparse(domain)
     if includeScheme:
-        result = '%s://' % url.scheme
+        if len(url.scheme) > 0:
+            result = '%s://' % url.scheme
     if len(url.netloc) == 0:
         result += url.path
     else:
@@ -68,45 +67,25 @@ def isRunning(pidFile):
         return False
 
 
-def escXML(text, escape_quotes=False):
-    if not isinstance(text, str):
-        if isinstance(text, int):
-            s = str(text)
-        else:
-            s = text
-        s = list("%s" % str(s))
-    else:
-        s = list(text)
-
-    cc = 0
-    matches = ('&', '<', '"', '>')
-
-    for c in s:
-        if c in matches:
-            if c == '&':
-                s[cc] = '&amp;'
-            elif c == '<':
-                s[cc] = '&lt;'
-            elif c == '>':
-                s[cc] = '&gt;'
-            elif escape_quotes:
-                s[cc] = '&quot;'
-        cc += 1
-    return ''.join(s)
+def _pluralize(template, value):
+    s = ''
+    if round(value) > 1:
+        s = 's'
+    return template.format(value, s)
 
 
-def _zeroDays(seconds):
+def _zeroDays(seconds, template):
     if seconds < 20:
         return 'just now'
     if seconds < 60:
-        return '%d seconds' % seconds
+        return template.format(_pluralize('{:.0f} second{}', seconds))
     if seconds < 120:
-        return 'a minute'
+        return template.format('a minute')
     if seconds < 3600:
-        return '%d minutes' % (seconds / 60)
+        return template.format(_pluralize('{:.0f} minute{}', seconds / 60))
     if seconds < 7200:
-        return 'an hour'
-    return '%d hours' % (seconds / 3600)
+        return template.format('an hour')
+    return template.format(_pluralize('{:.0f} hour{}', seconds / 3600))
 
 
 def relativeDelta(td):
@@ -115,35 +94,30 @@ def relativeDelta(td):
     seconds = abs(td.seconds)
     if td.days < 0:
         seconds = 86400 - seconds
-        t = "%s ago"
+        t = "{} ago"
     else:
-        t = "in %s"
+        t = "in {}"
     if days > 28:
         start = datetime.datetime.now()
         end = start + td
         months = (abs(end.year - start.year) * 12) + (end.month - start.month)
-        print(abs(end.year - start.year))
-        print(abs(end.year - start.year) * 12)
-        print(end.month - start.month)
-        print(months)
-
     if days == 0:
-        s = t % _zeroDays(seconds)
+        s = _zeroDays(seconds, t)
     else:
         if days == 1:
             if td.days < 0:
                 if seconds < 86400:
-                    s = t % _zeroDays(seconds)
+                    s = _zeroDays(seconds, t)
                 else:
                     s = 'yesterday'
             else:
                 s = 'tomorrow'
         elif days < 7:
-            s = t % f'{days} days'
+            s = t.format(_pluralize('{:.0f} day{}', days))
         elif days < 31:
-            s = t % f'{days / 7} weeks'
+            s = t.format(_pluralize('{:.0f} week{}', days / 7))
         elif days < 365:
-            s = t % f'{months} months'
+            s = t.format(_pluralize('{:.0f} month{}', months))
         else:
-            s = t % f'{td.years} years'
+            s = t.format(_pluralize('{:.0f} year{}', months / 12))
     return s

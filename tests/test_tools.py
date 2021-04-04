@@ -6,8 +6,9 @@
 
 import os
 import datetime
-
-from bearlib.tools import normalizeFilename, relativeDelta
+import tempfile
+from bearlib.tools import normalizeFilename, relativeDelta, baseDomain
+from bearlib.tools import pidWrite, pidRead, pidClear, isRunning
 
 
 def test_normalize():
@@ -19,7 +20,7 @@ def test_normalize():
     assert normalizeFilename('./foo.txt') == os.path.join(cwd,  'foo.txt')
 
 
-def TestRelativeDelta():
+def test_relativeDelta():
     assert relativeDelta(datetime.timedelta(0,   10))  == 'just now'
     assert relativeDelta(datetime.timedelta(0,   50))  == 'in 50 seconds'
     assert relativeDelta(datetime.timedelta(0,  100))  == 'in a minute'
@@ -34,9 +35,42 @@ def TestRelativeDelta():
     assert relativeDelta(datetime.timedelta(0, -8000)) == '2 hours ago'
 
     assert relativeDelta(datetime.timedelta(1))        == 'tomorrow'
+    assert relativeDelta(datetime.timedelta(-1))       == 'yesterday'
     assert relativeDelta(datetime.timedelta(2))        == 'in 2 days'
-    assert relativeDelta(datetime.timedelta(8))        == 'in 1 weeks'
-    assert relativeDelta(datetime.timedelta(40))       == 'in 1 months'
-    assert relativeDelta(datetime.timedelta(120))      == 'in 3 months'
-    assert relativeDelta(datetime.timedelta(360))      == 'in 12 months'
-    assert relativeDelta(datetime.timedelta(370))      == 'in 1 years'
+    assert relativeDelta(datetime.timedelta(8))        == 'in 1 week'
+    assert relativeDelta(datetime.timedelta(15))       == 'in 2 weeks'
+    assert relativeDelta(datetime.timedelta(40))       == 'in 1 month'
+    assert relativeDelta(datetime.timedelta(120))      == 'in 4 months'
+    assert relativeDelta(datetime.timedelta(360))      == 'in 11 months'
+    assert relativeDelta(datetime.timedelta(370))      == 'in 1 year'
+
+
+def test_baseDomain():
+    urls = [
+        "http://bear.im",
+        "http://bear.im/bearlog",
+        "http://bear.im/bearlog?param=value",
+    ]
+
+    for url in urls:
+        assert baseDomain(url)                       == "http://bear.im"
+        assert baseDomain(url, includeScheme=False)  == "bear.im"
+    assert baseDomain("bear.im/bearlog") == "bear.im/bearlog"
+
+
+def test_pid_routines():
+    try:
+        pidfilename = tempfile.mkstemp()[1]
+        pid = os.getpid()
+
+        pidWrite(pidfilename)
+        assert pidRead(pidfilename)       == pid
+        assert pidRead('fake/pid/file')   == -1
+        assert isRunning('fake/pid/file') is False
+
+        # because we are using the pid of the testing process
+        # pidClear() should not do anything as the process is active
+        pidClear(pidfilename)
+        assert os.path.exists(pidfilename)
+    finally:
+        os.remove(pidfilename)
