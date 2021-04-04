@@ -45,4 +45,7 @@ dist: check
 	pipenv run python -m build
 
 upload: dist
+	pipenv run python -m twine upload --repository testpypi dist/*
+
+upload-prod: dist
 	pipenv run python -m twine upload dist/*
