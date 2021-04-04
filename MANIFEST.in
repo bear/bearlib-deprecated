@@ -1,13 +1,13 @@
 include README.rst
 include CHANGES
 include LICENSE
-include Makefile
 include Pipfile
 include Pipfile.lock
 include Makefile
-include .coveragerc
-include pyproject.toml
 include *.py
+include pyproject.toml
+include setup.cfg
+include .coveragerc
 recursive-include tests *.py
 graft src
 prune .DS_Store

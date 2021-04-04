@@ -1,7 +1,5 @@
 bearlib
 
-A simple collection of helper routines that I use in a lot of projects.
-
 .. image:: https://circleci.com/gh/bear/bearlib.svg?style=svg
     :target: https://circleci.com/gh/bear/bearlib
     :alt: Build Status
@@ -15,26 +13,23 @@ A simple collection of helper routines that I use in a lot of projects.
     :target: https://codecov.io/github/bear/bearlib?branch=master
     :alt: CodeCov Report
 
-I used to just copy the directory into each project...
+A simple collection of helper routines that I use in a lot of projects.
 
-yes, a build/release person was breaking *all* the rules - *sigh*
+NOTE: As of version 0.10 this is a Python 3 only module
 
 Config
 ======
 
 A dictionary based config class::
-
     c = Config({ 'a': 1, 'b': 2, 'c': {'d': 1}}
     print("c.a =", c.a)
     print("c.c.d" =", c.c.d)
 
 generates::
-
     c.a = 1
     c.c.d = 1
 
 It also has three helper methods::
-
     fromDict(dictionary)
     fromJson(filename)
     fromEtcd(host='127.0.0.1', port=4001, base='/')
@@ -58,21 +53,17 @@ This will, I think, let me use the event plugins via the command line, but also 
 Install
 =======
 from PyPI::
-
     pip install bearlib
 
 from git::
-
     cd /base/of/your/virtualenv
     pip install -e git+https://github.com/bear/bearlib.git#egg=bearlib
 
 to update the from-git install:
-
     cd /base/of/your/virtualenv
     pip install --upgrade -e git+https://github.com/bear/bearlib.git#egg=bearlib
 
 Tests
 =====
 From the source directory::
-
     make test
